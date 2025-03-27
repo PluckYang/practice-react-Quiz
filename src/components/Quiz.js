@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ListFormat } from "typescript";
 import QUESTIONS from "../questions.js";
 import quizeCompleteImg from "../assets/quiz-complete.png";
+import QuestionTimer from "./QuestionTimer.js";
 
 export default function Quiz() {
   // to store user's choises of each question
@@ -32,6 +33,10 @@ export default function Quiz() {
   return (
     <div id="quiz">
       <div id="question">
+        <QuestionTimer
+          timeOut={10000}
+          onTimeOut={() => handleSelectAnswer(null)}
+        />
         <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
         <ul id="answers">
           {shuffledAnswers.map((answer) => (
