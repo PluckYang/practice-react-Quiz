@@ -2,12 +2,11 @@ import { useState, useCallback } from "react";
 import { ListFormat } from "typescript";
 import QUESTIONS from "../questions.js";
 import quizeCompleteImg from "../assets/quiz-complete.png";
-import QuestionTimer from "./QuestionTimer.js";
+import Question from "./Question.js";
 
 export default function Quiz() {
   // to control current answer state, to change button color
   const [answerState, setAnswerState] = useState("");
-
   // to store user's choises of each question
   const [userAnswers, setUserAnswers] = useState([]);
 
@@ -56,49 +55,17 @@ export default function Quiz() {
     );
   }
 
-  const shuffledAnswers = [...QUESTIONS[activeQuestionIndex].answers];
-  shuffledAnswers.sort(() => Math.random() - 0.5);
-
   return (
     <div id="quiz">
-      <div id="question">
-        <QuestionTimer
-          key={activeQuestionIndex}
-          timeOut={10000}
-          onTimeOut={handleSkipAnswer}
-        />
-        <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
-        <ul id="answers">
-          {shuffledAnswers.map((answer) => {
-            // control the style of current userAnswer's button
-            const isSelected = userAnswers[userAnswers.length - 1] === answer;
-            let cssClass = "";
-
-            if (answerState === "answered" && isSelected) {
-              cssClass = "selected";
-            }
-
-            if (
-              (answerState === "correct" || answerState === "wrong") &&
-              isSelected
-            ) {
-              cssClass = answerState;
-            }
-
-            // use cssClass control each answer button's style
-            return (
-              <li key={answer} className="answer">
-                <button
-                  onClick={() => handleSelectAnswer(answer)}
-                  className={cssClass}
-                >
-                  {answer}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      <Question
+        key={activeQuestionIndex} //add the key prop to recreate the component when question changes
+        questionText={QUESTIONS[activeQuestionIndex].text}
+        answers={QUESTIONS[activeQuestionIndex].answers}
+        onSelectAnswer={handleSelectAnswer}
+        selectedAnswer={userAnswers[userAnswers.length - 1]}
+        answerState={answerState}
+        onSkipAnswer={handleSkipAnswer}
+      />
     </div>
   );
 }
