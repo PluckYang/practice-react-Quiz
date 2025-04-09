@@ -5,41 +5,21 @@ import quizeCompleteImg from "../assets/quiz-complete.png";
 import Question from "./Question.js";
 
 export default function Quiz() {
-  // to control current answer state, to change button color
-  const [answerState, setAnswerState] = useState("");
   // to store user's choises of each question
   const [userAnswers, setUserAnswers] = useState([]);
 
-  // stay at current question, if answerState is not ""
-  const activeQuestionIndex =
-    answerState === "" ? userAnswers.length : userAnswers.length - 1;
+  const activeQuestionIndex = userAnswers.length;
 
   const quizIsComplete = activeQuestionIndex === QUESTIONS.length;
 
-  const handleSelectAnswer = useCallback(
-    function handleSelectAnswer(selectedAnswer) {
-      setAnswerState("answered");
-      setUserAnswers((prevUserAnswers) => {
-        return [...prevUserAnswers, selectedAnswer];
-      });
-
-      // confirm  current answer Correct or Wrong
-      setTimeout(() => {
-        if (selectedAnswer === QUESTIONS[activeQuestionIndex].answers[0]) {
-          setAnswerState("correct");
-        } else {
-          setAnswerState("wrong");
-        }
-
-        // reset answerState to "" again, and move on to next question
-        setTimeout(() => {
-          setAnswerState("");
-        }, 2000);
-      }, 1000);
-    },
-    // useCallback function should be recreated when activeQuestionIndex changed
-    [activeQuestionIndex]
-  );
+  const handleSelectAnswer = useCallback(function handleSelectAnswer(
+    selectedAnswer
+  ) {
+    setUserAnswers((prevUserAnswers) => {
+      return [...prevUserAnswers, selectedAnswer];
+    });
+  },
+  []);
 
   const handleSkipAnswer = useCallback(
     () => handleSelectAnswer(null),
@@ -59,11 +39,8 @@ export default function Quiz() {
     <div id="quiz">
       <Question
         key={activeQuestionIndex} //add the key prop to recreate the component when question changes
-        questionText={QUESTIONS[activeQuestionIndex].text}
-        answers={QUESTIONS[activeQuestionIndex].answers}
+        index={activeQuestionIndex} // key prop is exlusively used by react, can not be a usually prop
         onSelectAnswer={handleSelectAnswer}
-        selectedAnswer={userAnswers[userAnswers.length - 1]}
-        answerState={answerState}
         onSkipAnswer={handleSkipAnswer}
       />
     </div>
